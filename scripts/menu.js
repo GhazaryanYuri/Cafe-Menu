@@ -11,3 +11,17 @@ searchBtn.addEventListener("click", () => {
     searchBar.className = "disabled-searchbar";
   }
 });
+
+// ------------------------------------------------------------
+
+const menuLinks = document.querySelectorAll(".link");
+
+menuLinks.forEach((link) => {
+  link.addEventListener("click", () => {
+    for (let i = 0; i < menuLinks.length; i++) {
+      menuLinks[i].classList.remove("active");
+    }
+
+    link.classList.add("active");
+  });
+});
