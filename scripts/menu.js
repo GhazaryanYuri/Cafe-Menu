@@ -25,3 +25,24 @@ menuLinks.forEach((link) => {
     link.classList.add("active");
   });
 });
+
+// ------------------------------------------------------------
+
+const menuItems = document.querySelectorAll(".item");
+const menuItemsNames = document.querySelectorAll(".name");
+const menuItemsPrices = document.querySelectorAll(".price");
+const menuItemsImages = document.querySelectorAll(".item-img");
+
+menuItems.forEach((item, index) => {
+  item.addEventListener("click", () => {
+    const mealInfo = {
+      name: menuItemsNames[index].textContent,
+      price: menuItemsPrices[index].textContent,
+      imgURL: menuItemsImages[index].src,
+    };
+
+    localStorage.setItem("selectedMeal", JSON.stringify(mealInfo));
+
+    window.location.href = "./about-meal.html";
+  });
+});
