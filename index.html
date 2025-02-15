@@ -22,15 +22,19 @@
     </section>
     <!-- Scripts -->
     <script>
-      const API_Link =
-        "http://23.20.175.90/api/api/menu-filter/by-horekaclient-id/2";
+      const currentURL = window.location.href;
+      console.log(currentURL);
       const bodyBg = document.getElementById("body-bg");
       const rTitle = document.getElementById("r-title");
       const rLogo = document.getElementById("r-logo");
       const wMessage = document.getElementById("welcome-message");
 
-      const cafeIdIndex = API_Link.lastIndexOf("/");
-      console.log(API_Link.slice(cafeIdIndex + 1));
+      const cafeIdIndexArray = currentURL.lastIndexOf("/");
+      localStorage.setItem(
+        "horecaID",
+        (cafeIdIndex = currentURL.slice(cafeIdIndexArray + 1))
+      );
+      console.log(localStorage.getItem("horecaID"));
 
       async function FetchingAPI(link) {
         try {
@@ -47,7 +51,9 @@
         }
       }
 
-      FetchingAPI(API_Link);
+      FetchingAPI(
+        `http://23.20.175.90/api/api/menu-filter/by-horekaclient-id/${cafeIdIndex}`
+      );
     </script>
   </body>
 </html>
