@@ -16,9 +16,11 @@ const pageInfoData = {
 };
 
 languages.forEach((lang, index) => {
-  languages[index].classList.remove("active");
-
   lang.addEventListener("click", () => {
+    for (let i = 0; i < languages.length; i++) {
+      languages[i].classList.remove("active");
+    }
+
     lang.classList.add("active");
 
     pageInfoData.lang = lang.innerText;
