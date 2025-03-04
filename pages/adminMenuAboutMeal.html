@@ -226,7 +226,14 @@
       }
 
       .popup {
-        display: none;
+        /* display: none; */
+        opacity: 0;
+
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: -99999;
       }
 
       .popup-on {
@@ -243,6 +250,8 @@
         height: 200px;
         border: 1px solid var(--footer-border-top);
         border-radius: 4px;
+        opacity: 1;
+        z-index: 99999;
 
         h1 {
           font-size: 16px;
@@ -276,6 +285,7 @@
           align-items: center;
 
           button {
+            background-color: transparent;
             color: var(--btn-text);
             font-family: "Libre Baskerville", serif;
             font-size: 11px;
@@ -357,12 +367,7 @@
         <!-- Test Link -->
         <a href="./adminMenu.html" class="backPreviousPage"> Back to menu </a>
 
-        <button
-          id="saveCahngesBtn"
-          onclick="saveChanges(gettingMeal(admin_menu_API), update_API_URL)"
-        >
-          Save changes
-        </button>
+        <button id="saveCahngesBtn">Save changes</button>
       </footer>
 
       <div class="popup popup-off">
@@ -372,14 +377,15 @@
           <img src="../static/icons/popupSuccesfull.svg" alt="Img 1" />
         </div>
         <div class="popupButtons">
-          <button class="btn-1">See changes</button>
-          <button>Back to menu</button>
+          <!-- <button class="btn-1">See changes</button> -->
+          <!-- <button id="backToMenu">Back to menu</button> -->
+          <button class="closePopUp">X</button>
         </div>
       </div>
     </section>
 
     <script>
-      const storedMeal = JSON.parse(localStorage.getItem("selectedMeal"));
+      const storedMeal = JSON.parse(localStorage.getItem("aboutMeal"));
 
       console.log(storedMeal);
       const mealName = document.getElementById("name");
@@ -387,65 +393,15 @@
       const mealPrice = document.getElementById("price");
       const mealIMG = document.getElementById("foodImg");
       const mealDesc = document.getElementById("mealDescription");
-      const currentPrice = storedMeal.price.split(" ");
 
       console.log(mealPrice.innerText);
-
-      // if (popUp.classList.contains("popup-off")) {
-      //   popUp.classList.remove("popup-off");
-      //   popUp.classList.add("popup-on");
-      // } else {
-      //   popUp.classList.remove("popup-on");
-      //   popUp.classList.add("popup-off");
-      // }
-
-      const admin_menu_API =
-        "http://23.20.175.90/api/cafeadmin/api/menuCRUD/all-menu";
-
-      async function gettingMeal(link) {
-        try {
-          const response = await fetch(link, {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-            },
-          });
-
-          if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(
-              `Error: ${errorData.detail || response.statusText}`
-            );
-          }
-
-          const data = await response.json();
-
-          const currentMeal = data.filter(
-            (meal) => meal.id === Number(storedMeal.itemID)
-          )[0];
-
-          mealName.innerText = currentMeal.name;
-          mealAmount.innerText = currentPrice[0];
-          mealPrice.innerText = currentMeal.price;
-          mealIMG.src = currentMeal.image_src;
-          mealDesc.innerText = currentMeal.description;
-
-          console.log(currentMeal);
-        } catch (error) {
-          console.log("Error fetching data: ", error);
-        }
-      }
-
-      window.onload = () => {
-        gettingMeal(admin_menu_API);
-      };
 
       const update_API_URL = `http://23.20.175.90/api/cafeadmin/api/menuCRUD/update-product/${storedMeal.itemID}`;
       const saveBtn = document.getElementById("saveCahngesBtn");
       const popUp = document.querySelector(".popup");
 
-      async function saveChanges(gettingMeal, link) {
+      // Save Changes
+      async function saveChanges(link) {
         try {
           let mealChanges = {
             kind: storedMeal.innerText,
@@ -478,10 +434,54 @@
           const data = await response.json();
 
           console.log("Update successful:", data); // Handle successful response
+
+          if (popUp.classList.contains("popup-off")) {
+            popUp.classList.remove("popup-off");
+            popUp.classList.add("popup-on");
+          }
+
+          backMenu();
         } catch (error) {
           console.log("Error fetching data: ", error);
         }
       }
+
+      // Stored Meal in the screen
+      function onScreen() {
+        mealName.innerText = storedMeal.name;
+        mealAmount.innerText = storedMeal.valuta;
+        mealPrice.innerText = storedMeal.price;
+        mealIMG.src = storedMeal.img_url;
+        mealDesc.innerText = storedMeal.description;
+      }
+
+      /*
+        Պետք է ֆիքս անել ռեֆռեշ անելուց հետո ստացվող ուտելիքի մասին
+        ինֆորմացիան,
+        Ֆիքս անել saveChanges կնոպկեն, առաջին save-ից հետո էլ save չի անում
+      */
+
+      // Save Changes and back to menu
+      function backMenu() {
+        const closePopUpBtn = document.querySelector(".closePopUp");
+
+        closePopUpBtn.addEventListener("click", () => {
+          // Real link
+          // window.location = 'http://23.20.175.90/api/cafeadmin/cafe-admin-menu'
+
+          popUp.classList.remove("popup-on");
+        });
+      }
+
+      // Save Btn functionality
+      saveBtn.addEventListener("click", () => {
+        saveChanges(update_API_URL);
+      });
+
+      // Window onload
+      window.onload = () => {
+        onScreen();
+      };
     </script>
   </body>
 </html>

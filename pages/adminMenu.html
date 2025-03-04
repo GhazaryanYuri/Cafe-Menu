@@ -165,8 +165,8 @@
           min-height: 660px;
           display: flex;
           flex-direction: column;
-          justify-content: center;
-          align-items: flex-start;
+          justify-content: flex-start;
+          align-items: center;
           padding: 0px 4px;
           gap: 24px;
         }
@@ -348,6 +348,7 @@
         let filteredByKind;
         let meals = {};
         let mealCategories;
+        let aboutMeal = {};
         let menuItem = document.createElement('div');
 
         const currentLang = localStorage.getItem("language");
@@ -371,22 +372,20 @@
             const data = await response.json();
             dataArray = data.filter(meal => meal);
             console.log(dataArray);
-        console.log(dataArray.filter(d => d.kind === 'drink'))
+            console.log((meals))
 
           } catch (error) {
             console.log("Error fetching data: ", error);
           }
         }
-        fetchingAPI(admin_menu_API);
+        
 
         // Getting meal section data by kind
         function updateContent() {
           setTimeout(() => {
-            
-
           filteredByKind = dataArray.filter(m => m.kind === currentLinkId);
           for(let i = 0; i < filteredByKind.length; i++) {
-            if(filteredByKind[i].category in meals) {
+            if(filteredByKind[i].category.replace(' ', '') in meals) {
               meals[filteredByKind[i].category.replace(' ', '')].push(filteredByKind[i]);
             } else {
               meals[filteredByKind[i].category.replace(' ', '')] = [filteredByKind[i]];
@@ -410,7 +409,7 @@
             if(item.classList.contains(mealCategories[index])) {
               meals[mealCategories[index]].forEach((meal, i) => {
                 item.innerHTML += `
-                                    <div class="item" id="${mealCategories[index] + i}">
+                                    <div data-kind="${meal.kind}" class="item" id="${mealCategories[index] + i} ${meal.id}">
                                       <img src="${meals[mealCategories[index]][i].image_src}" alt="${meals[mealCategories[index]][i].image_src}" class="item-img" />
                                       <div class="info">
                                         <p class="name">${meals[mealCategories[index]][i].name}</p>
@@ -421,9 +420,40 @@
               })
             }
           })
-
-          categoryItems
         }, 2000)
+        }
+
+        // Adding event click listener to cards
+        function clickedMealPage() {
+          setTimeout(() => {
+            const itemCards = document.querySelectorAll('.item');
+          
+            itemCards.forEach((card) => {
+              card.addEventListener('click', () => {
+                const itemID = Number(card.id.split(' ')[1]); // Ensure it's a number
+              
+                const mealData = dataArray.find(meal => meal.id === itemID);
+
+                if (!mealData) {
+                  console.error(`Meal with ID ${itemID} not found in dataArray`);
+                  return;
+                }
+              
+                const aboutMeal = {
+                  name: card.querySelector('.name').innerText,
+                  img_url: card.querySelector('img').src,
+                  valuta: valuta[currentLang],
+                  price: card.querySelector('.price').innerText.split(' ')[1],
+                  itemID: itemID,
+                  kind: card.getAttribute('data-kind'),
+                  description: mealData.description // Now correctly accessing it
+                };
+              
+                localStorage.setItem('aboutMeal', JSON.stringify(aboutMeal));
+                window.location = './adminMenuAboutMeal.html';
+              })
+            })
+          }, 2100)
         }
 
         // Getting food links
@@ -439,11 +469,14 @@
             meals = {};
             menuItem.innerHTML = '';
 
+            
             updateContent();
+            clickedMealPage();
+            console.log(meals);
           })
         })
 
-        window.onload = updateContent();
+        window.onload = (updateContent(), clickedMealPage(),fetchingAPI(admin_menu_API));
 
     </script>    
   </body>
