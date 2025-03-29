@@ -266,10 +266,10 @@
       copyright_text.innerText = `© ${new Date().getFullYear()} Your Company. All rights reserved.`;
 
       // Real Link
-      // const currentURL = window.location.href;
+      const currentURL = window.location.href;
 
       // Test Link
-      const currentURL = `https://qrmenuarmenia.site/api/api/menu-filter/by-horekaclient-id/1`;
+      // const currentURL = `https://qrmenuarmenia.site/api/api/menu-filter/by-horekaclient-id/1`;
       const segments = currentURL.split("/");
       const indexURL = segments[segments.length - 1]; // Get the last part of the URL
 
@@ -314,14 +314,14 @@
       }
 
       // Real Link
-      // FetchingAPI(
-      //   `https://qrmenuarmenia.site/api/api/menu-filter/by-horekaclient-id/${indexURL}`
-      // );
+      FetchingAPI(
+        `https://qrmenuarmenia.site/api/api/menu-filter/by-horekaclient-id/${indexURL}`
+      );
 
       // Test Link
-      FetchingAPI(
-        `https://qrmenuarmenia.site/api/api/menu-filter/by-horekaclient-id/1`
-      );
+      // FetchingAPI(
+      //   `https://qrmenuarmenia.site/api/api/menu-filter/by-horekaclient-id/1`
+      // );
 
       // ////////////////////////////////////////////////////////////////////////////
 
