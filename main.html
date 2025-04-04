@@ -128,6 +128,7 @@
             color: aliceblue;
             font-weight: 600;
             letter-spacing: 1px;
+            cursor: pointer;
           }
         }
 
@@ -213,7 +214,7 @@
       languages.forEach((lang) => {
         lang.addEventListener("click", async () => {
           try {
-            const response = await fetch("/data/main.json");
+            const response = await fetch("/api/data/get-main");
             const data = await response.json();
 
             go_menu_example_btn.innerText =
